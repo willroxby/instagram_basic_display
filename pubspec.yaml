@@ -2,13 +2,13 @@ name: instagram_basic_display
 description: An incomplete dart library for interfacing with the Instagram Basic Display API.
 version: 0.0.1
 author: Will Roxby<will.roxby@booza.app>
-homepage:
+homepage: https://github.com/willroxby/instagram_basic_display.git
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
 
 #dependencies:
-#
+
 #dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
