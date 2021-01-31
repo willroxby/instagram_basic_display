@@ -7,8 +7,10 @@ homepage: https://github.com/willroxby/instagram_basic_display.git
 environment:
   sdk: ">=2.7.0 <3.0.0"
 
-#dependencies:
-
+dependencies:
+  http: ^0.12.2
+  json_annotation: ^3.1.1
+  oauth2: ^1.6.3
 #dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
