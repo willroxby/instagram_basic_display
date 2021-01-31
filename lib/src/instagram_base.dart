@@ -17,17 +17,8 @@ abstract class InstagramApiBase {
   InstagramApiBase.fromClient(FutureOr<http.BaseClient> client) {
     _client = client;
 
-    _artists = Artists(this);
-    _albums = Albums(this);
-    _tracks = Tracks(this);
-    _playlists = Playlists(this);
-    _recommendations = RecommendationsEndpoint(this);
     _me = Me(this);
-    _users = Users(this, _me);
-    _search = Search(this);
-    _audioFeatures = AudioFeatures(this);
-    _categories = Categories(this);
-    _shows = Shows(this);
+    _media = Media(this);
   }
 
   InstagramApiBase(InstagramApiCredentials credentials, [http.BaseClient httpClient, Function(InstagramApiCredentials) callBack])

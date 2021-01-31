@@ -1,4 +1,3 @@
-
 part of instagram;
 
 abstract class EndpointBase {
