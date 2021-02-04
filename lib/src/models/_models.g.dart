@@ -12,8 +12,8 @@ InstagramError _$InstagramErrorFromJson(Map<String, dynamic> json) {
     ..message = json['message'] as String;
 }
 
-MediaContent _$MediaContentFromJson(Map<String, dynamic> json) {
-  return MediaContent()
+Media _$MediaFromJson(Map<String, dynamic> json) {
+  return Media()
     ..caption = json['caption'] as String
     ..id = json['id'] as String
     ..media_type = json['media_type'] as String
@@ -39,6 +39,6 @@ User _$UserFromJson(Map<String, dynamic> json) {
   return User()
     ..account_type = json['account_type'] as String
     ..id = json['id'] as String
-    ..media_count = json['media_count'] as String
+    ..media_count = json['media_count'] as int
     ..username = json['username'] as String;
 }

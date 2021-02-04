@@ -7,9 +7,19 @@ class Me extends EndpointPaging {
   Me(InstagramApiBase api) : super(api);
 
   Future<User> get() async {
-    var jsonString = await _api._get(_path);
+    final InstagramApiCredentials credentials = await _api.getCredentials();
+    var jsonString = await _api._get('$_path?' + _buildQuery({'access_token': credentials.accessToken, 'fields': 'username,id,account_type,media_count'}));
+    var map = json.decode(jsonString);
+    return User.fromJson(map);
+  }
+
+  Future<Iterable<Media>> media() async {
+    final InstagramApiCredentials credentials = await _api.getCredentials();
+    var jsonString = await _api._get('$_path/media?' + _buildQuery({'access_token': credentials.accessToken, 'fields': 'caption,id,media_type,media_url,permalink,thumbnail_url,timestamp,username'}));
     var map = json.decode(jsonString);
 
-    return User.fromJson(map);
+
+    var items = map['data'] as Iterable<dynamic>;
+    return items.map((item) => Media.fromJson(item));
   }
 }

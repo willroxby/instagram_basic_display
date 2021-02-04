@@ -7,6 +7,6 @@ class User extends Object {
 
   String account_type;
   String id;
-  String media_count;
+  int media_count;
   String username;
 }
