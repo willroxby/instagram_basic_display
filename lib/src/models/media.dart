@@ -14,4 +14,5 @@ class Media extends Object {
   String thumbnail_url;
   String timestamp;
   String username;
+  Children children;
 }
