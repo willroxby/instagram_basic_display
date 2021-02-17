@@ -1,10 +1,10 @@
 part of instagram.models;
 
 @JsonSerializable(createToJson: false)
-class MediaContent extends Object {
-  MediaContent();
+class Media extends Object {
+  Media();
 
-  factory MediaContent.fromJson(Map<String, dynamic> json) => _$MediaContentFromJson(json);
+  factory Media.fromJson(Map<String, dynamic> json) => _$MediaFromJson(json);
 
   String caption;
   String id;
@@ -14,4 +14,5 @@ class MediaContent extends Object {
   String thumbnail_url;
   String timestamp;
   String username;
+  Children children;
 }

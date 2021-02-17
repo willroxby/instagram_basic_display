@@ -13,7 +13,6 @@ export 'src/models/_models.dart';
 part 'src/endpoints/endpoint_base.dart';
 part 'src/endpoints/endpoint_paging.dart';
 part 'src/endpoints/me.dart';
-part 'src/endpoints/media.dart';
 
 part 'src/instagram_credentials.dart';
 part 'src/instagram_base.dart';

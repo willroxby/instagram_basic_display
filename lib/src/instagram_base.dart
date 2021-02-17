@@ -1,4 +1,3 @@
-
 part of instagram;
 
 abstract class InstagramApiBase {
@@ -9,40 +8,67 @@ abstract class InstagramApiBase {
   bool _shouldWait = false;
   FutureOr<oauth2.Client> _client;
   Me _me;
+
   Me get me => _me;
   Media _media;
+
   Media get media => _media;
+
   oauth2.Client get client => _client;
 
   InstagramApiBase.fromClient(FutureOr<http.BaseClient> client) {
     _client = client;
 
     _me = Me(this);
-    _media = Media(this);
   }
 
   InstagramApiBase(InstagramApiCredentials credentials, [http.BaseClient httpClient, Function(InstagramApiCredentials) callBack])
       : this.fromClient(_getOauth2Client(credentials, httpClient, callBack));
 
-  InstagramApiBase.fromAuthCodeGrant(oauth2.AuthorizationCodeGrant grant, String responseUri)
-      : this.fromClient(grant.handleAuthorizationResponse(Uri.parse(responseUri).queryParameters));
+  InstagramApiBase.fromAuthCodeGrant(oauth2.AuthorizationCodeGrant grant, String responseUri) : this.fromClient(grant.handleAuthorizationResponse(Uri.parse(responseUri).queryParameters));
 
-  static oauth2.AuthorizationCodeGrant authorizationCodeGrant(InstagramApiCredentials credentials, http.BaseClient httpClient,
-      [Function(InstagramApiCredentials) callBack]) {
+  static oauth2.AuthorizationCodeGrant authorizationCodeGrant(InstagramApiCredentials credentials, http.BaseClient httpClient, [Function(InstagramApiCredentials) callBack]) {
     if (callBack == null)
-      return oauth2.AuthorizationCodeGrant(credentials.clientId, Uri.parse(InstagramApiBase._authorizationUrl), Uri.parse(InstagramApiBase._tokenUrl),
-          secret: credentials.clientSecret, httpClient: httpClient);
+      return oauth2.AuthorizationCodeGrant(
+        credentials.clientId,
+        Uri.parse(InstagramApiBase._authorizationUrl),
+        Uri.parse(InstagramApiBase._tokenUrl),
+        secret: credentials.clientSecret,
+        httpClient: httpClient,
+        basicAuth: false,
+        getParameters: (contentType, body) {
+          final Map<String, dynamic> parameters = _parseJsonParameters(contentType, body);
+          parameters.putIfAbsent("token_type", () => "Bearer");
+          return parameters;
+        },
+      );
 
     return oauth2.AuthorizationCodeGrant(credentials.clientId, Uri.parse(InstagramApiBase._authorizationUrl), Uri.parse(InstagramApiBase._tokenUrl),
-        secret: credentials.clientSecret, httpClient: httpClient, onCredentialsRefreshed: (oauth2.Credentials cred) {
-          InstagramApiCredentials newCredentials = InstagramApiCredentials(credentials.clientId, credentials.clientSecret,
-              accessToken: cred.accessToken, expiration: cred.expiration, refreshToken: cred.refreshToken, scopes: cred.scopes);
-          callBack(newCredentials);
-        });
+        basicAuth: false, secret: credentials.clientSecret, httpClient: httpClient, onCredentialsRefreshed: (oauth2.Credentials cred) {
+      InstagramApiCredentials newCredentials =
+          InstagramApiCredentials(credentials.clientId, credentials.clientSecret, accessToken: cred.accessToken, expiration: cred.expiration, refreshToken: cred.refreshToken, scopes: cred.scopes);
+      callBack(newCredentials);
+    }, getParameters: (contentType, body) {
+      final Map<String, dynamic> parameters = _parseJsonParameters(contentType, body);
+      parameters.putIfAbsent("token_type", () => "Bearer");
+      return parameters;
+    });
   }
 
-  static FutureOr<oauth2.Client> _getOauth2Client(InstagramApiCredentials credentials, http.BaseClient httpClient,
-      [Function(InstagramApiCredentials) callBack]) async {
+  static Map<String, dynamic> _parseJsonParameters(var contentType, String body) {
+    if (contentType == null || (contentType.mimeType != 'application/json' && contentType.mimeType != 'text/javascript')) {
+      throw FormatException('Content-Type was "$contentType", expected "application/json"');
+    }
+
+    var untypedParameters = jsonDecode(body);
+    if (untypedParameters is Map<String, dynamic>) {
+      return untypedParameters;
+    }
+
+    throw FormatException('Parameters must be a map, was "$untypedParameters"');
+  }
+
+  static FutureOr<oauth2.Client> _getOauth2Client(InstagramApiCredentials credentials, http.BaseClient httpClient, [Function(InstagramApiCredentials) callBack]) async {
     if (credentials.fullyQualified) {
       var oauthCredentials = credentials._toOauth2Credentials();
 
@@ -60,13 +86,12 @@ abstract class InstagramApiBase {
         onCredentialsRefreshed: callBack == null
             ? null
             : (oauth2.Credentials cred) {
-          InstagramApiCredentials newCredentials = InstagramApiCredentials(credentials.clientId, credentials.clientSecret,
-              accessToken: cred.accessToken, expiration: cred.expiration, refreshToken: cred.refreshToken, scopes: cred.scopes);
-          callBack(newCredentials);
-        },
+                InstagramApiCredentials newCredentials = InstagramApiCredentials(credentials.clientId, credentials.clientSecret,
+                    accessToken: cred.accessToken, expiration: cred.expiration, refreshToken: cred.refreshToken, scopes: cred.scopes);
+                callBack(newCredentials);
+              },
         secret: credentials.clientSecret,
       );
-
     }
 
     return oauth2.clientCredentialsGrant(
@@ -94,35 +119,27 @@ abstract class InstagramApiBase {
   }
 
   Future<String> _getImpl(String url, Map<String, String> headers) async {
-    return await _requestWrapper(
-            () async => await (await _client).get(url, headers: headers));
+    return await _requestWrapper(() async => await (await _client).get(url, headers: headers));
   }
 
-  Future<String> _postImpl(
-      String url, Map<String, String> headers, dynamic body) async {
-    return await _requestWrapper(() async =>
-    await (await _client).post(url, headers: headers, body: body));
+  Future<String> _postImpl(String url, Map<String, String> headers, dynamic body) async {
+    return await _requestWrapper(() async => await (await _client).post(url, headers: headers, body: body));
   }
 
-  Future<String> _deleteImpl(
-      String url, Map<String, String> headers, body) async {
+  Future<String> _deleteImpl(String url, Map<String, String> headers, body) async {
     return await _requestWrapper(() async {
       final request = http.Request('DELETE', Uri.parse(url));
       request.headers.addAll(headers);
       request.body = body;
-      return await http.Response.fromStream(
-          await (await _client).send(request));
+      return await http.Response.fromStream(await (await _client).send(request));
     });
   }
 
-  Future<String> _putImpl(
-      String url, Map<String, String> headers, dynamic body) async {
-    return await _requestWrapper(() async =>
-    await (await _client).put(url, headers: headers, body: body));
+  Future<String> _putImpl(String url, Map<String, String> headers, dynamic body) async {
+    return await _requestWrapper(() async => await (await _client).put(url, headers: headers, body: body));
   }
 
-  Future<String> _requestWrapper(Future<http.Response> Function() request,
-      {retryLimit = 5}) async {
+  Future<String> _requestWrapper(Future<http.Response> Function() request, {retryLimit = 5}) async {
     for (var i = 0; i < retryLimit; i++) {
       while (_shouldWait) {
         await Future.delayed(Duration(milliseconds: 500));
@@ -131,11 +148,9 @@ abstract class InstagramApiBase {
         return handleErrors(await request());
       } on ApiRateException catch (ex) {
         if (i == retryLimit - 1) rethrow;
-        print(
-            'Instagram API rate exceeded. waiting for ${ex.retryAfter} seconds');
+        print('Instagram API rate exceeded. waiting for ${ex.retryAfter} seconds');
         _shouldWait = true;
-        unawaited(Future.delayed(Duration(seconds: ex.retryAfter))
-            .then((v) => _shouldWait = false));
+        unawaited(Future.delayed(Duration(seconds: ex.retryAfter)).then((v) => _shouldWait = false));
       }
     }
     throw InstagramException('Could not complete request');
@@ -151,8 +166,7 @@ abstract class InstagramApiBase {
       final jsonMap = json.decode(responseBody);
       final error = InstagramError.fromJson(jsonMap['error']);
       if (response.statusCode == 429) {
-        throw ApiRateException.fromInstagram(
-            error, num.parse(response.headers['retry-after']));
+        throw ApiRateException.fromInstagram(error, num.parse(response.headers['retry-after']));
       }
       throw InstagramException.fromInstagram(
         error,
