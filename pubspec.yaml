@@ -8,9 +8,9 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  http: ^0.12.2
+  http: ^0.13.0
   json_annotation: ^4.0.0
-  oauth2: ^1.6.3
+  oauth2: ^2.0.0
   pedantic: ^1.11.0
 
 dev_dependencies:
