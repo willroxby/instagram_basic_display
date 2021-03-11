@@ -2,7 +2,7 @@ part of instagram.models;
 
 typedef ParserFunction<T> = T Function(dynamic object);
 
-Iterable<dynamic> itemsNativeFromJson(List<dynamic> json) => json;
+Iterable<dynamic>? itemsNativeFromJson(List<dynamic>? json) => json;
 List<Map> itemsNativeToJson(Iterable<dynamic> items) => List.from(items);
 
 @JsonSerializable(createToJson: false)
@@ -12,7 +12,7 @@ class Paging<T> extends Object {
   factory Paging.fromJson(Map<String, dynamic> json) => _$PagingFromJson(json);
 
   /// A link to the Web API endpoint returning the full result of the request.
-  String href;
+  String? href;
 
   /// The requested data
   ///
@@ -20,21 +20,21 @@ class Paging<T> extends Object {
   /// requested data as a deserialized list.
   @JsonKey(
       name: 'items', fromJson: itemsNativeFromJson, toJson: itemsNativeToJson)
-  Iterable<dynamic> itemsNative;
+  Iterable<dynamic>? itemsNative;
 
   /// The maximum number of items in the response (as set in the query or by
   /// default).
-  int limit;
+  int? limit;
 
   /// URL to the next page of items. ([null] if none)
-  String next;
+  String? next;
 
   /// The offset of the items returned (as set in the query or by default).
-  int offset;
+  int? offset;
 
   /// URL to the previous page of items. (null if none)
-  String previous;
+  String? previous;
 
   /// The total number of items available to return.
-  int total;
+  int? total;
 }

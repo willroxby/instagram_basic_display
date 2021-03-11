@@ -1,7 +1,7 @@
 part of instagram;
 
 Iterable<List<T>> batches<T>(Iterable<T> source, int size) sync* {
-  List<T> accumulator;
+  List<T>? accumulator;
   for (var value in source) {
     (accumulator ??= []).add(value);
     if (accumulator.length == size) {

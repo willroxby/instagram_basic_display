@@ -1,8 +1,8 @@
 part of instagram;
 
 class InstagramApi extends InstagramApiBase {
-  InstagramApi(InstagramApiCredentials credentials, {Function(InstagramApiCredentials) onCredentialsRefreshed})
-      : super(credentials, http.Client(), onCredentialsRefreshed);
+  InstagramApi(InstagramApiCredentials credentials, {Function(InstagramApiCredentials)? onCredentialsRefreshed})
+      : super(credentials, http.Client() as http.BaseClient?, onCredentialsRefreshed);
 
   InstagramApi.fromClient(FutureOr<oauth2.Client> client)
       : super.fromClient(client);
@@ -12,7 +12,7 @@ class InstagramApi extends InstagramApiBase {
       : super.fromAuthCodeGrant(grant, responseUri);
 
   static oauth2.AuthorizationCodeGrant authorizationCodeGrant(
-      InstagramApiCredentials credentials, {Function(InstagramApiCredentials) onCredentialsRefreshed}) {
-    return InstagramApiBase.authorizationCodeGrant(credentials, http.Client(), onCredentialsRefreshed);
+      InstagramApiCredentials credentials, {Function(InstagramApiCredentials)? onCredentialsRefreshed}) {
+    return InstagramApiBase.authorizationCodeGrant(credentials, http.Client() as http.BaseClient, onCredentialsRefreshed);
   }
 }

@@ -1,8 +1,8 @@
 part of instagram;
 
 class InstagramException implements Exception {
-  int status;
-  String message;
+  int? status;
+  String? message;
 
   InstagramException([this.message]);
 
