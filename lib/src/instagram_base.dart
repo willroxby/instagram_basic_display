@@ -119,11 +119,11 @@ abstract class InstagramApiBase {
   }
 
   Future<String> _getImpl(String url, Map<String, String> headers) async {
-    return await _requestWrapper(() async => await (await _client).get(url, headers: headers));
+    return await _requestWrapper(() async => await (await _client).get(Uri.parse(url), headers: headers));
   }
 
   Future<String> _postImpl(String url, Map<String, String> headers, dynamic body) async {
-    return await _requestWrapper(() async => await (await _client).post(url, headers: headers, body: body));
+    return await _requestWrapper(() async => await (await _client).post(Uri.parse(url), headers: headers, body: body));
   }
 
   Future<String> _deleteImpl(String url, Map<String, String> headers, body) async {
@@ -136,7 +136,7 @@ abstract class InstagramApiBase {
   }
 
   Future<String> _putImpl(String url, Map<String, String> headers, dynamic body) async {
-    return await _requestWrapper(() async => await (await _client).put(url, headers: headers, body: body));
+    return await _requestWrapper(() async => await (await _client).put(Uri.parse(url), headers: headers, body: body));
   }
 
   Future<String> _requestWrapper(Future<http.Response> Function() request, {retryLimit = 5}) async {
