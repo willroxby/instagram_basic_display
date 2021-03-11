@@ -5,7 +5,7 @@ author: Will Roxby<will.roxby@booza.app>
 homepage: https://github.com/willroxby/instagram_basic_display.git
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   http: ^0.13.0
@@ -15,8 +15,8 @@ dependencies:
 
 dev_dependencies:
 #  test: ^1.15.7
-  build_runner: ^1.11.5
-  json_serializable: ^4.0.2
+#  build_runner: ^1.11.5
+#  json_serializable: ^4.0.2
 
 # For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
+# following page: https://dart.dev/tools/pu/pubspec
