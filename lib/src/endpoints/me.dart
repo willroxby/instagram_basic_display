@@ -23,8 +23,7 @@ class Me extends EndpointPaging {
   Future<Iterable<Media>> media() async {
     final InstagramApiCredentials credentials = await _api.getCredentials();
     var jsonString =
-    await _api._get(
-        '$_path/media?' + _buildQuery({'access_token': credentials.accessToken, 'fields': 'caption,id,media_type,media_url,permalink,thumbnail_url,timestamp,username,children', 'limit': 50}));
+        await _api._get('$_path/media?' + _buildQuery({'access_token': credentials.accessToken, 'fields': 'caption,id,media_type,media_url,permalink,thumbnail_url,timestamp,username,children'}));
     var map = json.decode(jsonString);
     var items = map['data'] as Iterable<dynamic>;
     return items.map((item) => Media.fromJson(item));
